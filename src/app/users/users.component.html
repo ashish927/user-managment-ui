@@ -67,13 +67,11 @@
                         
                         <input type="text" [(ngModel)]="user.role" *ngIf="enableEdit && enableEditIndex == i"/>
                      </td>
-                    <!-- <td>{{user.name}}</td> -->
-                    <!-- <td>{{user.email}}</td> -->
-                    <!-- <td>{{user.role}}</td> -->
+                    
                     <td class="benchmark_name">
                         <img *ngIf="user.status == 'active'" src="assets/ico_active.svg">
                         <img *ngIf="user.status == 'inactive'" src="assets/ico_inactive.svg">
-                        <img *ngIf="user.status == 'pending'" src="assets/ico_pending.svg">
+                        <img *ngIf="user.status == 'pending'" src="assets/ico_pending.svg">&nbsp;
                         <span *ngIf="enableEditIndex != i">{{user.status}}</span>
                         <input type="text" [(ngModel)]="user.status" *ngIf="enableEdit && enableEditIndex == i"/>
 

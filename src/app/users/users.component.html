@@ -1,0 +1,150 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Users</title>
+</head>
+
+<body>
+    <!-- <header>
+        <nav class="navbar navbar-default">
+            <a class="navbar-brand" href="#">Ma Games</a> 
+        </nav>
+    </header> -->
+
+    <div class="container">
+        <img src="assets/ico_users.svg" height="23" width="25" hspace="15">Users
+
+        <div class="float-right">
+            <div class="form-group col-xs-6">
+                <div class="inner-addon right-addon">
+                    <div class="form-inline">
+                        <div class="row">
+                            <i class="fa fa-search"></i>
+                            <!-- <input type="text" class="form-control" placeholder="Search" />  -->
+                            <div class="search-hero">
+                                <input class="form-control" type="text" name="search" [(ngModel)]="searchText"
+                                    autocomplete="off" placeholder="search">
+                            </div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <!-- <i class="fa fa-plus"></i> -->
+                            <button type="button" class="btn btn-square btn-warning text-white" (click)="open(content)">
+                                + Add User</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th (click)="sort('name')">NAME
+                        <i class="fa fa-arrow-up" *ngIf="key =='name'"
+                            [ngClass]="{'fal fa-arrow-down':reverse,'fal fa-arrow-up':!reverse}"></i>
+                    </th>
+                    <th>EMAIL</th>
+                    <th>ROLE TYPE</th>
+                    <th>STATUS</th>
+                    <th></th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users | orderBy: key : reverse | filter:searchText let i = index" class="hover-highlight">
+                   
+                    <td class="benchmark_name">
+                        <span *ngIf="enableEditIndex != i">{{user.name}}</span>
+                        <input type="text" [(ngModel)]="user.name" *ngIf="enableEdit && enableEditIndex == i"/>
+                     </td>
+                     <td class="benchmark_name">
+                        <span *ngIf="enableEditIndex != i">{{user.email}}</span>
+                        <input type="text" [(ngModel)]="user.email" *ngIf="enableEdit && enableEditIndex == i"/>
+                     </td>
+                     <td class="benchmark_name">
+                        <span *ngIf="enableEditIndex != i">{{user.role}}</span>
+                        
+                        <input type="text" [(ngModel)]="user.role" *ngIf="enableEdit && enableEditIndex == i"/>
+                     </td>
+                    <!-- <td>{{user.name}}</td> -->
+                    <!-- <td>{{user.email}}</td> -->
+                    <!-- <td>{{user.role}}</td> -->
+                    <td class="benchmark_name">
+                        <img *ngIf="user.status == 'active'" src="assets/ico_active.svg">
+                        <img *ngIf="user.status == 'inactive'" src="assets/ico_inactive.svg">
+                        <img *ngIf="user.status == 'pending'" src="assets/ico_pending.svg">
+                        <span *ngIf="enableEditIndex != i">{{user.status}}</span>
+                        <input type="text" [(ngModel)]="user.status" *ngIf="enableEdit && enableEditIndex == i"/>
+
+                    </td>
+                    <td> 
+                        <input type="image" class="table-row-action edit-action" src="assets/ico_edit.svg" *ngIf="i != enableEditIndex || enableEditIndex == null" (click)="enableEditMethod($event, i)" alt="Submit">
+                        <!-- <a href="#" class="table-row-action edit-action" *ngIf="!enableEdit" (click)="enableEditMethod($event, i)"> -->
+                            <button *ngIf="enableEdit && enableEditIndex == i" id="saveBtn" class="btn page-primary-action-btn" (click)="saveSegment(user)" type="submit"><i class="fa fa-save"></i></button>
+
+                            <button *ngIf="enableEdit && enableEditIndex == i" (click)="enableEdit=false; cancel()" class="btn page-secondary-action-btn" ><i class="fa fa-window-close"></i></button>
+
+                        <button class="btn table-row-action edit-action" *ngIf="i != enableEditIndex || enableEditIndex == null" (click)="deleteUser(user)"><i class="fa fa-user-times"></i></button>
+                    </td>
+                   
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!----------------------------------------------------------------------------------->
+
+    <ng-template #content let-modal>
+
+        <div class="modal-content">
+            <div class="modal-header no-border">
+                <h4 class="modal-title" id="modal-basic-title">Add User</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                        <input class="form-control" formControlName="name" type="text" name="Name" placeholder="Name">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input class="form-control" formControlName="email" type="text" name="Email"
+                            placeholder="Email">
+                    </div>
+                    <br>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" formControlName="role" type="radio" name="role"
+                            id="inlineRadio1" value="Admin">
+                        <label class="form-check-label" for="inlineRadio1">Admin</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" formControlName="role" type="radio" name="role"
+                            id="inlineRadio2" value="Customer Executive">
+                        <label class="form-check-label" for="inlineRadio2">Customer Executive </label>
+                    </div>
+                    <br><br>
+                    <div class="form-group">
+                        <input class="form-control" formControlName="mobileNo" type="text" name="mobileNo"
+                            placeholder="Mobile Number (Optional)">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" [disabled]="loading"
+                            class="btn btn-square btn-warning btn-lg btn-block text-white">
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                            ADD USER</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+    </ng-template>
+
+
+</body>
+
+</html>
